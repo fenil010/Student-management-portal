@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="glass col-md-4">
+        <h3 class="text-center mb-3">Add Student</h3>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input class="form-control mb-2" name="name" placeholder="Name" required>
+            <input class="form-control mb-2" name="roll" placeholder="Roll Number" required>
+            <input class="form-control mb-2" name="branch" placeholder="Branch" required>
+            <input class="form-control mb-3" name="semester" placeholder="Semester" required>
+
+            <button class="btn btn-success w-100">Save Student</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

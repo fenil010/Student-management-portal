@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="glass col-md-4 text-center">
+        <h3 class="mb-3">Student Profile</h3>
+        <p><b>Name:</b> {{ student.name }}</p>
+        <p><b>Roll:</b> {{ student.roll_number }}</p>
+        <p><b>Branch:</b> {{ student.branch }}</p>
+        <p><b>Semester:</b> {{ student.semester }}</p>
+
+        <a href="{% url 'student_list' %}" class="btn btn-outline-light mt-2">Back</a>
+    </div>
+</div>
+{% endblock %}
