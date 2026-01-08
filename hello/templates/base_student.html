@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Student Portal - StudentSys{% endblock %}</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                        },
+                        accent: {
+                            400: '#f472b6',
+                            500: '#ec4899',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 8s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-15px) rotate(2deg)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(139, 92, 246, 0.3)' },
+                            '50%': { boxShadow: '0 0 40px rgba(139, 92, 246, 0.6)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Student Portal Gradient Background - Purple/Pink Theme */
+        .student-gradient-bg {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            top: 0;
+            left: 0;
+            background:
+                radial-gradient(ellipse at 10% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 80%, rgba(236, 72, 153, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(17, 24, 39, 0.95) 0%, transparent 100%),
+                linear-gradient(135deg, #0f0a1e 0%, #1a1333 50%, #0f0a1e 100%);
+        }
+
+        /* Floating Orbs - Student Theme */
+        .student-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.25;
+            animation: floatOrb 25s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .student-orb-1 {
+            width: 350px;
+            height: 350px;
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+            top: 10%;
+            right: -100px;
+        }
+
+        .student-orb-2 {
+            width: 280px;
+            height: 280px;
+            background: linear-gradient(135deg, #ec4899, #f472b6);
+            bottom: 20%;
+            left: -80px;
+            animation-delay: -8s;
+        }
+
+        .student-orb-3 {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #6366f1, #818cf8);
+            top: 60%;
+            right: 30%;
+            animation-delay: -15s;
+        }
+
+        @keyframes floatOrb {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            25% {
+                transform: translate(20px, -40px) scale(1.03);
+            }
+
+            50% {
+                transform: translate(-30px, 20px) scale(0.97);
+            }
+
+            75% {
+                transform: translate(25px, 15px) scale(1.02);
+            }
+        }
+
+        /* Student Glass Card */
+        .student-glass {
+            background: rgba(17, 24, 39, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(139, 92, 246, 0.15);
+            border-radius: 1.25rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .student-glass:hover {
+            border-color: rgba(139, 92, 246, 0.3);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.1);
+        }
+
+        /* Student Stat Card */
+        .student-stat-card {
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.7) 0%, rgba(30, 27, 75, 0.5) 100%);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(139, 92, 246, 0.1);
+            border-radius: 1.25rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .student-stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #8b5cf6, #ec4899);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .student-stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .student-stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(139, 92, 246, 0.15);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            border-radius: 0.875rem;
+            color: #9ca3af;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .sidebar-nav-item:hover {
+            background: rgba(139, 92, 246, 0.1);
+            color: #a78bfa;
+        }
+
+        .sidebar-nav-item.active {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(236, 72, 153, 0.1) 100%);
+            color: #a78bfa;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .sidebar-nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 60%;
+            background: linear-gradient(180deg, #8b5cf6, #ec4899);
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* Avatar Ring */
+        .avatar-ring {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 3px;
+            border-radius: 50%;
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+
+        /* Progress Ring */
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(17, 24, 39, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #8b5cf6, #ec4899);
+            border-radius: 3px;
+        }
+
+        /* Gradient Text */
+        .student-gradient-text {
+            background: linear-gradient(135deg, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* AOS Override */
+        [data-aos] {
+            visibility: visible !important;
+            opacity: 1 !important;
+            transform: none !important;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-950 text-white min-h-screen">
+    <!-- Gradient Background -->
+    <div class="student-gradient-bg"></div>
+
+    <!-- Floating Orbs -->
+    <div class="student-orb student-orb-1"></div>
+    <div class="student-orb student-orb-2"></div>
+    <div class="student-orb student-orb-3"></div>
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-72 fixed left-0 top-0 h-full p-5 border-r border-white/5 bg-gray-950/50 backdrop-blur-xl z-40">
+            <!-- Logo -->
+            <a href="{% url 'home' %}" class="flex items-center gap-3 mb-10 group">
+                <div
+                    class="w-12 h-12 bg-gradient-to-br from-violet-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/30 group-hover:scale-110 transition-transform">
+                    <i class="ph ph-student text-xl text-white"></i>
+                </div>
+                <div>
+                    <span class="text-lg font-bold text-white">StudentSys</span>
+                    <p class="text-xs text-gray-500">Student Portal</p>
+                </div>
+            </a>
+
+            <!-- Profile Card -->
+            {% if student %}
+            <div class="student-glass p-4 mb-8">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="avatar-ring">
+                        <div
+                            class="w-12 h-12 bg-gradient-to-br from-violet-600 to-pink-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                            {{ student.name|first|upper }}
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="font-semibold text-white truncate">{{ student.name }}</h3>
+                        <p class="text-xs text-gray-400">{{ student.roll_number }}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                    <span class="px-2 py-1 bg-violet-500/20 text-violet-400 rounded-full">{{ student.branch }}</span>
+                    <span class="px-2 py-1 bg-pink-500/20 text-pink-400 rounded-full">Sem {{ student.semester }}</span>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Navigation -->
+            <nav class="space-y-2">
+                <p class="text-xs text-gray-500 uppercase tracking-wider mb-3 px-2">Menu</p>
+
+                <a href="{% url 'student_dashboard' %}" class="sidebar-nav-item active">
+                    <i class="ph ph-squares-four text-xl"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="{% url 'student_detail' student.id %}" class="sidebar-nav-item">
+                    <i class="ph ph-user text-xl"></i>
+                    <span>My Profile</span>
+                </a>
+
+                <a href="{% url 'attendance_list' %}" class="sidebar-nav-item">
+                    <i class="ph ph-calendar-check text-xl"></i>
+                    <span>Attendance</span>
+                </a>
+
+                <a href="{% url 'grade_list' %}" class="sidebar-nav-item">
+                    <i class="ph ph-graduation-cap text-xl"></i>
+                    <span>My Grades</span>
+                </a>
+
+                <a href="{% url 'fee_list' %}" class="sidebar-nav-item">
+                    <i class="ph ph-credit-card text-xl"></i>
+                    <span>Fee Status</span>
+                </a>
+
+                <a href="{% url 'notice_list' %}" class="sidebar-nav-item">
+                    <i class="ph ph-megaphone text-xl"></i>
+                    <span>Notices</span>
+                </a>
+            </nav>
+
+            <!-- Logout -->
+            <div class="absolute bottom-5 left-5 right-5">
+                <a href="{% url 'logout' %}"
+                    class="sidebar-nav-item text-red-400 hover:text-red-300 hover:bg-red-500/10">
+                    <i class="ph ph-sign-out text-xl"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 ml-72 p-8">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script>
+        // Simple fade-in animation on load
+        document.addEventListener('DOMContentLoaded', function () {
+            const elements = document.querySelectorAll('[data-animate]');
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+
+</html>

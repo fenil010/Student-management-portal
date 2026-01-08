@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Header -->
+<div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4" data-aos="fade-up">
+    <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
+            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+            </svg>
+        </div>
+        <div>
+            <h1 class="text-3xl font-bold text-white">Attendance Records</h1>
+            <p class="text-gray-400">Track student attendance</p>
+        </div>
+    </div>
+    <a href="{% url 'add_attendance' %}" class="btn-animated inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-medium rounded-xl transition-all shadow-lg shadow-green-500/25">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        Mark Attendance
+    </a>
+</div>
+
+<!-- Attendance Table -->
+<div class="glass overflow-hidden" data-aos="fade-up" data-aos-delay="200">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left">
+            <thead class="text-xs uppercase bg-gray-800/80 text-gray-400">
+                <tr>
+                    <th class="px-6 py-4">Date</th>
+                    <th class="px-6 py-4">Student</th>
+                    <th class="px-6 py-4">Roll No</th>
+                    <th class="px-6 py-4">Subject</th>
+                    <th class="px-6 py-4">Status</th>
+                    <th class="px-6 py-4">Remarks</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-700">
+                {% for a in attendances %}
+                <tr class="hover:bg-gray-700/30 transition-colors">
+                    <td class="px-6 py-4 text-gray-300">{{ a.date|date:"M d, Y" }}</td>
+                    <td class="px-6 py-4">
+                        <a href="{% url 'student_detail' a.student.id %}" class="font-medium text-white hover:text-green-400 transition-colors">
+                            {{ a.student.name }}
+                        </a>
+                    </td>
+                    <td class="px-6 py-4 text-gray-400">{{ a.student.roll_number }}</td>
+                    <td class="px-6 py-4 text-white">{{ a.subject }}</td>
+                    <td class="px-6 py-4">
+                        {% if a.status == 'Present' %}
+                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/20 text-green-400">
+                            <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                            Present
+                        </span>
+                        {% elif a.status == 'Absent' %}
+                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/20 text-red-400">
+                            <span class="w-1.5 h-1.5 bg-red-400 rounded-full"></span>
+                            Absent
+                        </span>
+                        {% else %}
+                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-500/20 text-yellow-400">
+                            <span class="w-1.5 h-1.5 bg-yellow-400 rounded-full"></span>
+                            Late
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-gray-400">{{ a.remarks|truncatewords:3|default:"-" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="px-6 py-12 text-center">
+                        <div class="flex flex-col items-center">
+                            <div class="w-20 h-20 bg-gray-700/50 rounded-full flex items-center justify-center mb-4">
+                                <svg class="w-10 h-10 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-medium text-white mb-1">No attendance records</h3>
+                            <p class="text-gray-500 mb-4">Start marking attendance for your students</p>
+                            <a href="{% url 'add_attendance' %}" class="btn-animated px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-xl transition-all">
+                                Mark Attendance
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
