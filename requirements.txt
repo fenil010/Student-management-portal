@@ -1,7 +1,14 @@
-Django>=4.2,<7.0
+Django>=4.2,<5.0
 gunicorn
 
 # PostgreSQL Database Adapter
 psycopg2-binary
+
+# Static Files & Compression
 whitenoise[brotli]
+
+# Database URL Parser
 dj-database-url
+
+# Image Processing
+Pillow
