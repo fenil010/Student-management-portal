@@ -1,45 +1,88 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Grades & Marks</h2>
-        <a href="{% url 'add_grade' %}" class="btn btn-info">+ Add Grade</a>
-    </div>
-    
-    <div class="glass">
-        <div class="table-responsive">
-            <table class="table table-dark table-hover text-center align-middle">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Student</th>
-                        <th>Subject</th>
-                        <th>Exam Type</th>
-                        <th>Marks</th>
-                        <th>Percentage</th>
-                        <th>Grade</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for g in grades %}
-                    <tr>
-                        <td>{{ g.date|date:"M d, Y" }}</td>
-                        <td><a href="{% url 'student_detail' g.student.id %}" class="text-light">{{ g.student.name }}</a></td>
-                        <td>{{ g.subject }}</td>
-                        <td>{{ g.exam_type }}</td>
-                        <td>{{ g.obtained_marks }}/{{ g.max_marks }}</td>
-                        <td>{{ g.percentage|floatformat:1 }}%</td>
-                        <td><span class="badge bg-primary fs-6">{{ g.grade }}</span></td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="7" class="text-center py-4">No grades recorded</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+<!-- Header -->
+<div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4" data-aos="fade-up">
+    <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
+            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
         </div>
+        <div>
+            <h1 class="text-3xl font-bold text-white">Grades & Marks</h1>
+            <p class="text-gray-400">Academic performance tracking</p>
+        </div>
+    </div>
+    <a href="{% url 'add_grade' %}" class="btn-animated inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-medium rounded-xl transition-all shadow-lg shadow-purple-500/25">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        Add Grade
+    </a>
+</div>
+
+<!-- Grades Table -->
+<div class="glass overflow-hidden" data-aos="fade-up" data-aos-delay="200">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left">
+            <thead class="text-xs uppercase bg-gray-800/80 text-gray-400">
+                <tr>
+                    <th class="px-6 py-4">Date</th>
+                    <th class="px-6 py-4">Student</th>
+                    <th class="px-6 py-4">Subject</th>
+                    <th class="px-6 py-4">Exam Type</th>
+                    <th class="px-6 py-4">Marks</th>
+                    <th class="px-6 py-4">Percentage</th>
+                    <th class="px-6 py-4">Grade</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-700">
+                {% for g in grades %}
+                <tr class="hover:bg-gray-700/30 transition-colors">
+                    <td class="px-6 py-4 text-gray-300">{{ g.date|date:"M d, Y" }}</td>
+                    <td class="px-6 py-4">
+                        <a href="{% url 'student_detail' g.student.id %}" class="font-medium text-white hover:text-purple-400 transition-colors">
+                            {{ g.student.name }}
+                        </a>
+                    </td>
+                    <td class="px-6 py-4 text-white">{{ g.subject }}</td>
+                    <td class="px-6 py-4 text-gray-300">{{ g.exam_type }}</td>
+                    <td class="px-6 py-4 text-gray-300">{{ g.obtained_marks }}/{{ g.max_marks }}</td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-2">
+                            <div class="w-16 bg-gray-700 rounded-full h-2">
+                                <div class="bg-purple-500 h-2 rounded-full" style="width: {{ g.percentage|floatformat:0 }}%"></div>
+                            </div>
+                            <span class="text-gray-400 text-xs">{{ g.percentage|floatformat:1 }}%</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-purple-500/20 text-purple-400">
+                            {{ g.grade }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="px-6 py-12 text-center">
+                        <div class="flex flex-col items-center">
+                            <div class="w-20 h-20 bg-gray-700/50 rounded-full flex items-center justify-center mb-4">
+                                <svg class="w-10 h-10 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-medium text-white mb-1">No grades recorded</h3>
+                            <p class="text-gray-500 mb-4">Start adding grades for your students</p>
+                            <a href="{% url 'add_grade' %}" class="btn-animated px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-xl transition-all">
+                                Add Grade
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

@@ -1,69 +1,165 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="glass col-md-5">
-        <h3 class="text-center mb-4">Add Grade</h3>
+<!-- Breadcrumb -->
+<nav class="flex mb-6" aria-label="Breadcrumb" data-aos="fade-up">
+    <ol class="inline-flex items-center space-x-1 md:space-x-3">
+        <li class="inline-flex items-center">
+            <a href="{% url 'home' %}" class="inline-flex items-center text-sm font-medium text-gray-400 hover:text-white transition-colors">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                </svg>
+                Home
+            </a>
+        </li>
+        <li>
+            <div class="flex items-center">
+                <svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <a href="{% url 'grade_list' %}" class="ml-1 text-sm font-medium text-gray-400 hover:text-white transition-colors">Grades</a>
+            </div>
+        </li>
+        <li>
+            <div class="flex items-center">
+                <svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="ml-1 text-sm font-medium text-white">Add Grade</span>
+            </div>
+        </li>
+    </ol>
+</nav>
 
-        <form method="POST">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label class="form-label">Student</label>
-                <select class="form-select" name="student_id" required>
+<!-- Form Card -->
+<div class="glass p-8 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg shadow-purple-500/30">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+        </div>
+        <h1 class="text-2xl font-bold text-white mb-2">Add Grade</h1>
+        <p class="text-gray-400">Record student grades and marks</p>
+    </div>
+    
+    <form method="POST" class="space-y-6">
+        {% csrf_token %}
+        
+        <!-- Student Selection -->
+        <div class="relative">
+            <label for="student_id" class="block mb-2 text-sm font-medium text-gray-300">Student *</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                </div>
+                <select id="student_id" name="student_id" required
+                    class="input-glass w-full pl-10 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50">
                     <option value="">Select Student</option>
                     {% for student in students %}
                     <option value="{{ student.id }}">{{ student.name }} ({{ student.roll_number }})</option>
                     {% endfor %}
                 </select>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Subject</label>
-                <input class="form-control" name="subject" placeholder="e.g., Database Management System" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Exam Type</label>
-                <select class="form-select" name="exam_type" required>
-                    <option value="">Select Exam Type</option>
-                    <option value="Assignment">Assignment</option>
-                    <option value="Quiz">Quiz</option>
-                    <option value="Midterm">Midterm</option>
-                    <option value="Final">Final</option>
-                </select>
-            </div>
-            <div class="row mb-3">
-                <div class="col-6">
-                    <label class="form-label">Max Marks</label>
-                    <input class="form-control" type="number" name="max_marks" min="1" required>
-                </div>
-                <div class="col-6">
-                    <label class="form-label">Obtained Marks</label>
-                    <input class="form-control" type="number" name="obtained_marks" min="0" required>
-                </div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Grade</label>
-                <select class="form-select" name="grade" required>
-                    <option value="">Select Grade</option>
-                    <option value="A+">A+ (90-100%)</option>
-                    <option value="A">A (85-89%)</option>
-                    <option value="A-">A- (80-84%)</option>
-                    <option value="B+">B+ (75-79%)</option>
-                    <option value="B">B (70-74%)</option>
-                    <option value="B-">B- (65-69%)</option>
-                    <option value="C+">C+ (60-64%)</option>
-                    <option value="C">C (55-59%)</option>
-                    <option value="C-">C- (50-54%)</option>
-                    <option value="D">D (40-49%)</option>
-                    <option value="F">F (Below 40%)</option>
-                </select>
-            </div>
-            <button class="btn btn-info w-100">Save Grade</button>
-        </form>
-        
-        <div class="text-center mt-3">
-            <a href="{% url 'grade_list' %}" class="text-light text-decoration-none">← Back to Grades</a>
         </div>
-    </div>
+        
+        <!-- Subject -->
+        <div class="relative">
+            <label for="subject" class="block mb-2 text-sm font-medium text-gray-300">Subject *</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                </div>
+                <input type="text" id="subject" name="subject" required placeholder="e.g., Database Management System"
+                    class="input-glass w-full pl-10 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 placeholder-gray-500">
+            </div>
+        </div>
+        
+        <!-- Exam Type -->
+        <div class="relative">
+            <label for="exam_type" class="block mb-2 text-sm font-medium text-gray-300">Exam Type *</label>
+            <select id="exam_type" name="exam_type" required
+                class="input-glass w-full p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50">
+                <option value="">Select Exam Type</option>
+                <option value="Assignment">Assignment</option>
+                <option value="Quiz">Quiz</option>
+                <option value="Midterm">Midterm</option>
+                <option value="Final">Final</option>
+            </select>
+        </div>
+        
+        <!-- Marks -->
+        <div class="grid grid-cols-2 gap-6">
+            <div class="relative">
+                <label for="max_marks" class="block mb-2 text-sm font-medium text-gray-300">Max Marks *</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
+                        </svg>
+                    </div>
+                    <input type="number" id="max_marks" name="max_marks" min="1" required placeholder="100"
+                        class="input-glass w-full pl-10 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 placeholder-gray-500">
+                </div>
+            </div>
+            
+            <div class="relative">
+                <label for="obtained_marks" class="block mb-2 text-sm font-medium text-gray-300">Obtained Marks *</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <input type="number" id="obtained_marks" name="obtained_marks" min="0" required placeholder="85"
+                        class="input-glass w-full pl-10 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 placeholder-gray-500">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Grade -->
+        <div class="relative">
+            <label for="grade" class="block mb-2 text-sm font-medium text-gray-300">Grade *</label>
+            <select id="grade" name="grade" required
+                class="input-glass w-full p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50">
+                <option value="">Select Grade</option>
+                <option value="A+">A+ (90-100%)</option>
+                <option value="A">A (85-89%)</option>
+                <option value="A-">A- (80-84%)</option>
+                <option value="B+">B+ (75-79%)</option>
+                <option value="B">B (70-74%)</option>
+                <option value="B-">B- (65-69%)</option>
+                <option value="C+">C+ (60-64%)</option>
+                <option value="C">C (55-59%)</option>
+                <option value="C-">C- (50-54%)</option>
+                <option value="D">D (40-49%)</option>
+                <option value="F">F (Below 40%)</option>
+            </select>
+        </div>
+        
+        <!-- Submit Button -->
+        <div class="flex flex-col sm:flex-row gap-4 pt-4">
+            <button type="submit" 
+                class="btn-animated flex-1 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-medium rounded-xl p-3 transition-all shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Save Grade
+            </button>
+            <a href="{% url 'grade_list' %}" 
+                class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-xl transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                Cancel
+            </a>
+        </div>
+    </form>
 </div>
 {% endblock %}
 

@@ -6,7 +6,8 @@ from .views import (
     grade_list, add_grade,
     fee_list, add_fee, update_fee,
     notice_list, add_notice, delete_notice,
-    reports
+    reports,
+    student_signup, teacher_signup, student_dashboard
 )
 
 urlpatterns = [
@@ -14,8 +15,13 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
     
-    # Dashboard
+    # Signup Pages
+    path('student/signup/', student_signup, name='student_signup'),
+    path('teacher/signup/', teacher_signup, name='teacher_signup'),
+    
+    # Dashboards
     path('dashboard/', admin_dashboard, name='admin_dashboard'),
+    path('student/dashboard/', student_dashboard, name='student_dashboard'),
     
     # Student CRUD
     path('students/', student_list, name='student_list'),
@@ -45,3 +51,4 @@ urlpatterns = [
     # Reports
     path('reports/', reports, name='reports'),
 ]
+

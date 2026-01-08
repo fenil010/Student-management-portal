@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Sum
+from django.contrib.auth.models import User
 from .models import Student, Attendance, Grade, Fee, Notice
 
 def home(request):
@@ -22,7 +23,16 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('admin_dashboard')
+            # Check if user is admin (staff) or student
+            if user.is_staff:
+                return redirect('admin_dashboard')
+            else:
+                # Check if user has a student profile
+                try:
+                    Student.objects.get(user=user)
+                    return redirect('student_dashboard')
+                except Student.DoesNotExist:
+                    return redirect('admin_dashboard')
         else:
             return render(request, 'login.html', {'error': 'Invalid credentials'})
     return render(request, 'login.html')
@@ -255,3 +265,140 @@ def reports(request):
         'fee_stats': fee_stats,
         'grade_stats': grade_stats
     })
+
+
+# ============= STUDENT SIGNUP =============
+
+def student_signup(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        name = request.POST.get('name')
+        roll_number = request.POST.get('roll_number')
+        phone = request.POST.get('phone')
+        branch = request.POST.get('branch')
+        semester = request.POST.get('semester')
+        address = request.POST.get('address', '')
+        
+        # Check if user already exists
+        if User.objects.filter(username=username).exists():
+            return render(request, "student_signup.html", {'error': 'Username already exists'})
+        
+        if User.objects.filter(email=email).exists():
+            return render(request, "student_signup.html", {'error': 'Email already registered'})
+        
+        if Student.objects.filter(roll_number=roll_number).exists():
+            return render(request, "student_signup.html", {'error': 'Roll number already registered'})
+        
+        # Create user
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+            first_name=name.split()[0] if name else '',
+            last_name=' '.join(name.split()[1:]) if name else ''
+        )
+        
+        # Create student profile
+        Student.objects.create(
+            user=user,
+            name=name,
+            email=email,
+            roll_number=roll_number,
+            phone=phone,
+            branch=branch,
+            semester=semester,
+            address=address
+        )
+        
+        # Auto login
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('student_dashboard')
+    
+    return render(request, "student_signup.html")
+
+
+# ============= TEACHER SIGNUP =============
+
+def teacher_signup(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        first_name = request.POST.get('first_name', '')
+        last_name = request.POST.get('last_name', '')
+        department = request.POST.get('department', 'Faculty')
+        phone = request.POST.get('phone', '')
+        
+        # Check if user already exists
+        if User.objects.filter(username=username).exists():
+            return render(request, "teacher_signup.html", {'error': 'Username already exists'})
+        
+        if User.objects.filter(email=email).exists():
+            return render(request, "teacher_signup.html", {'error': 'Email already registered'})
+        
+        # Create user (teacher - not superuser, but staff for admin access)
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+            first_name=first_name,
+            last_name=last_name,
+            is_staff=True  # Allow admin access
+        )
+        
+        # Login the user
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('admin_dashboard')
+    
+    return render(request, "teacher_signup.html")
+
+
+# ============= STUDENT DASHBOARD =============
+
+@login_required
+def student_dashboard(request):
+    # Try to get student profile from the logged in user
+    try:
+        student = Student.objects.get(user=request.user)
+    except Student.DoesNotExist:
+        # If no student profile, redirect to admin dashboard
+        return redirect('admin_dashboard')
+    
+    # Get full QuerySets for calculations
+    all_attendance = student.attendances.all()
+    all_grades = student.grades.all()
+    all_fees = student.fees.all()
+    notices = Notice.objects.filter(is_active=True)[:3]
+    
+    # Calculate stats on full QuerySets (before slicing)
+    total_attendance = all_attendance.count()
+    present_count = all_attendance.filter(status='Present').count()
+    attendance_percentage = round((present_count / total_attendance * 100), 1) if total_attendance > 0 else 0
+    
+    avg_grade = all_grades.aggregate(avg=Avg('obtained_marks'))['avg'] or 0
+    pending_fees = all_fees.filter(status='Pending').count()
+    total_pending_amount = all_fees.filter(status='Pending').aggregate(total=Sum('amount'))['total'] or 0
+    
+    # Now slice for display (after calculating stats)
+    attendance = all_attendance[:10]
+    grades = all_grades[:10]
+    fees = all_fees[:5]
+    
+    return render(request, "student_dashboard.html", {
+        'student': student,
+        'attendance': attendance,
+        'grades': grades,
+        'fees': fees,
+        'notices': notices,
+        'attendance_percentage': attendance_percentage,
+        'avg_grade': round(avg_grade, 2),
+        'pending_fees': pending_fees,
+        'total_pending_amount': total_pending_amount
+    })
+

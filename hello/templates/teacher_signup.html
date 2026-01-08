@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center py-8">
+    <div class="glass p-8 w-full max-w-2xl" data-gsap="fade-up" data-gsap-delay="100">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="w-20 h-20 bg-gradient-to-br from-teal-400 to-emerald-500 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg shadow-teal-500/30 animate-float">
+                <i class="ph ph-chalkboard-teacher text-4xl text-white"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-2" data-gsap="fade-up" data-gsap-delay="200">Teacher Registration</h1>
+            <p class="text-gray-400" data-gsap="fade-up" data-gsap-delay="300">Join our faculty team</p>
+        </div>
+        
+        <!-- Error Message -->
+        {% if error %}
+        <div class="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-xl flex items-center gap-3" data-gsap="shake">
+            <i class="ph ph-warning text-red-400 text-xl"></i>
+            <p class="text-red-400 text-sm">{{ error }}</p>
+        </div>
+        {% endif %}
+        
+        <!-- Signup Form -->
+        <form method="POST" class="space-y-6" data-gsap="fade-up" data-gsap-delay="400">
+            {% csrf_token %}
+            
+            <!-- Account Info -->
+            <div>
+                <h3 class="text-lg font-semibold text-teal-400 mb-4 flex items-center gap-2">
+                    <i class="ph ph-user-circle"></i>
+                    Account Information
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="relative">
+                        <label for="username" class="block mb-2 text-sm font-medium text-gray-300">Username *</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <i class="ph ph-at text-gray-400"></i>
+                            </div>
+                            <input type="text" id="username" name="username" required
+                                class="input-glass w-full pl-10 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 placeholder-gray-500" 
+                                placeholder="Choose username">
+                        </div>
+                    </div>
+                    
+                    <div class="relative">
+                        <label for="email" class="block mb-2 text-sm font-medium text-gray-300">Email Address *</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <i class="ph ph-envelope text-gray-400"></i>
+                            </div>
+                            <input type="email" id="email" name="email" required
+                                class="input-glass w-full pl-10 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 placeholder-gray-500" 
+                                placeholder="your@email.com">
+                        </div>
+                    </div>
+                    
+                    <div class="relative md:col-span-2">
+                        <label for="password" class="block mb-2 text-sm font-medium text-gray-300">Password *</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <i class="ph ph-lock-key text-gray-400"></i>
+                            </div>
+                            <input type="password" id="password" name="password" required minlength="8"
+                                class="input-glass w-full pl-10 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 placeholder-gray-500" 
+                                placeholder="Min 8 characters">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Personal Info -->
+            <div>
+                <h3 class="text-lg font-semibold text-emerald-400 mb-4 flex items-center gap-2">
+                    <i class="ph ph-user"></i>
+                    Personal Information
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="relative">
+                        <label for="first_name" class="block mb-2 text-sm font-medium text-gray-300">First Name *</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <i class="ph ph-user text-gray-400"></i>
+                            </div>
+                            <input type="text" id="first_name" name="first_name" required
+                                class="input-glass w-full pl-10 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 placeholder-gray-500" 
+                                placeholder="First name">
+                        </div>
+                    </div>
+                    
+                    <div class="relative">
+                        <label for="last_name" class="block mb-2 text-sm font-medium text-gray-300">Last Name</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <i class="ph ph-user text-gray-400"></i>
+                            </div>
+                            <input type="text" id="last_name" name="last_name"
+                                class="input-glass w-full pl-10 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 placeholder-gray-500" 
+                                placeholder="Last name">
+                        </div>
+                    </div>
+                    
+                    <div class="relative">
+                        <label for="department" class="block mb-2 text-sm font-medium text-gray-300">Department *</label>
+                        <select id="department" name="department" required
+                            class="input-glass w-full p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50">
+                            <option value="">Select Department</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Mechanical">Mechanical</option>
+                            <option value="Civil">Civil</option>
+                            <option value="Electrical">Electrical</option>
+                            <option value="Information Technology">Information Technology</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Physics">Physics</option>
+                            <option value="Chemistry">Chemistry</option>
+                            <option value="Administration">Administration</option>
+                        </select>
+                    </div>
+                    
+                    <div class="relative">
+                        <label for="phone" class="block mb-2 text-sm font-medium text-gray-300">Phone Number</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <i class="ph ph-phone text-gray-400"></i>
+                            </div>
+                            <input type="text" id="phone" name="phone"
+                                class="input-glass w-full pl-10 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 placeholder-gray-500" 
+                                placeholder="+91 9876543210">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Submit Button -->
+            <button type="submit" 
+                class="btn-animated w-full bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white font-medium rounded-xl p-4 transition-all shadow-lg shadow-teal-500/25 flex items-center justify-center gap-2"
+                data-gsap="fade-up" data-gsap-delay="500">
+                <i class="ph ph-check-circle text-xl"></i>
+                Create Account
+            </button>
+        </form>
+        
+        <!-- Login Link -->
+        <div class="mt-8 text-center" data-gsap="fade-up" data-gsap-delay="600">
+            <p class="text-gray-400">Already have an account? 
+                <a href="{% url 'login' %}" class="text-teal-400 hover:text-teal-300 transition-colors font-medium">Login here</a>
+            </p>
+        </div>
+        
+        <!-- Footer -->
+        <div class="mt-6 pt-6 border-t border-gray-700 text-center">
+            <p class="text-xs text-gray-500">By registering, you agree to our Terms of Service and Privacy Policy</p>
+        </div>
+    </div>
+</div>
+
+<!-- GSAP Animation Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const animatedElements = document.querySelectorAll('[data-gsap]');
+        
+        animatedElements.forEach(el => {
+            const animation = el.dataset.gsap;
+            const delay = parseInt(el.dataset.gsapDelay) || 0;
+            
+            if (animation === 'fade-up') {
+                gsap.fromTo(el, 
+                    { opacity: 0, y: 30 },
+                    { opacity: 1, y: 0, duration: 0.6, delay: delay / 1000, ease: 'power2.out' }
+                );
+            } else if (animation === 'fade-in') {
+                gsap.fromTo(el,
+                    { opacity: 0 },
+                    { opacity: 1, duration: 0.5, delay: delay / 1000 }
+                );
+            } else if (animation === 'shake') {
+                gsap.fromTo(el,
+                    { x: -10 },
+                    { x: 10, duration: 0.1, repeat: 5, yoyo: true, delay: delay / 1000 }
+                );
+            }
+        });
+    });
+</script>
+{% endblock %}
+
