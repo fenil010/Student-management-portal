@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav class="flex mb-6" aria-label="Breadcrumb" data-aos="fade-up">
+    <ol class="inline-flex items-center space-x-1 md:space-x-3">
+        <li class="inline-flex items-center">
+            <a href="{% url 'home' %}" class="inline-flex items-center text-sm font-medium text-gray-400 hover:text-white transition-colors">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                </svg>
+                Home
+            </a>
+        </li>
+        <li>
+            <div class="flex items-center">
+                <svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <a href="{% url 'attendance_list' %}" class="ml-1 text-sm font-medium text-gray-400 hover:text-white transition-colors">Attendance</a>
+            </div>
+        </li>
+        <li>
+            <div class="flex items-center">
+                <svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="ml-1 text-sm font-medium text-white">Mark Attendance</span>
+            </div>
+        </li>
+    </ol>
+</nav>
+
+<!-- Form Card -->
+<div class="glass p-8 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg shadow-green-500/30">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+        </div>
+        <h1 class="text-2xl font-bold text-white mb-2">Mark Attendance</h1>
+        <p class="text-gray-400">Record student attendance for a specific date and subject</p>
+    </div>
+    
+    <form method="POST" class="space-y-6">
+        {% csrf_token %}
+        
+        <!-- Student Selection -->
+        <div class="relative">
+            <label for="student_id" class="block mb-2 text-sm font-medium text-gray-300">Student *</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                </div>
+                <select id="student_id" name="student_id" required
+                    class="input-glass w-full pl-10 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50">
+                    <option value="">Select Student</option>
+                    {% for student in students %}
+                    <option value="{{ student.id }}">{{ student.name }} ({{ student.roll_number }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+        <!-- Date and Subject -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="relative">
+                <label for="date" class="block mb-2 text-sm font-medium text-gray-300">Date *</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <input type="date" id="date" name="date" required
+                        class="input-glass w-full pl-10 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50">
+                </div>
+            </div>
+            
+            <div class="relative">
+                <label for="subject" class="block mb-2 text-sm font-medium text-gray-300">Subject *</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <input type="text" id="subject" name="subject" required placeholder="e.g., Data Structures"
+                        class="input-glass w-full pl-10 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 placeholder-gray-500">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Status -->
+        <div>
+            <label class="block mb-3 text-sm font-medium text-gray-300">Status *</label>
+            <div class="grid grid-cols-3 gap-4">
+                <label class="cursor-pointer">
+                    <input type="radio" name="status" value="Present" class="peer sr-only" checked>
+                    <div class="p-4 rounded-xl border-2 border-gray-600 bg-gray-800/50 peer-checked:border-green-500 peer-checked:bg-green-500/20 transition-all text-center">
+                        <svg class="w-8 h-8 mx-auto mb-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p class="text-white font-medium">Present</p>
+                    </div>
+                </label>
+                <label class="cursor-pointer">
+                    <input type="radio" name="status" value="Absent" class="peer sr-only">
+                    <div class="p-4 rounded-xl border-2 border-gray-600 bg-gray-800/50 peer-checked:border-red-500 peer-checked:bg-red-500/20 transition-all text-center">
+                        <svg class="w-8 h-8 mx-auto mb-2 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p class="text-white font-medium">Absent</p>
+                    </div>
+                </label>
+                <label class="cursor-pointer">
+                    <input type="radio" name="status" value="Late" class="peer sr-only">
+                    <div class="p-4 rounded-xl border-2 border-gray-600 bg-gray-800/50 peer-checked:border-yellow-500 peer-checked:bg-yellow-500/20 transition-all text-center">
+                        <svg class="w-8 h-8 mx-auto mb-2 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p class="text-white font-medium">Late</p>
+                    </div>
+                </label>
+            </div>
+        </div>
+        
+        <!-- Remarks -->
+        <div class="relative">
+            <label for="remarks" class="block mb-2 text-sm font-medium text-gray-300">Remarks (Optional)</label>
+            <textarea id="remarks" name="remarks" rows="3"
+                class="input-glass w-full p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 placeholder-gray-500" 
+                placeholder="Add any additional notes..."></textarea>
+        </div>
+        
+        <!-- Submit Button -->
+        <div class="flex flex-col sm:flex-row gap-4 pt-4">
+            <button type="submit" 
+                class="btn-animated flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-medium rounded-xl p-3 transition-all shadow-lg shadow-green-500/25 flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Save Attendance
+            </button>
+            <a href="{% url 'attendance_list' %}" 
+                class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-xl transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

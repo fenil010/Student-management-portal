@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center">
+    <div class="glass p-8 w-full max-w-md" data-gsap="fade-up" data-gsap-delay="100">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div
+                class="w-20 h-20 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg shadow-cyan-500/30 animate-float">
+                <i class="ph ph-student text-4xl text-white"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-white mb-2">Welcome Back</h1>
+            <p class="text-gray-400 text-sm">Sign in to StudentSys</p>
+        </div>
+
+        <!-- Error Message -->
+        {% if error %}
+        <div class="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-xl flex items-center gap-3"
+            data-gsap="shake">
+            <i class="ph ph-warning text-red-400 text-xl"></i>
+            <p class="text-red-400 text-sm">{{ error }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Login Form -->
+        <form method="POST" class="space-y-6" data-gsap="fade-up" data-gsap-delay="200">
+            {% csrf_token %}
+
+            <!-- Username Input -->
+            <div class="relative">
+                <label for="username" class="block mb-2 text-sm font-medium text-gray-300">Username</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <i class="ph ph-at text-gray-400"></i>
+                    </div>
+                    <input type="text" id="username" name="username"
+                        class="input-glass w-full pl-10 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500/50 placeholder-gray-500"
+                        placeholder="Enter your username" required autofocus>
+                </div>
+            </div>
+
+            <!-- Password Input -->
+            <div class="relative">
+                <label for="password" class="block mb-2 text-sm font-medium text-gray-300">Password</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <i class="ph ph-lock-key text-gray-400"></i>
+                    </div>
+                    <input type="password" id="password" name="password"
+                        class="input-glass w-full pl-10 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500/50 placeholder-gray-500"
+                        placeholder="Enter your password" required>
+                </div>
+            </div>
+
+            <!-- Remember Me -->
+            <div class="flex items-start" data-gsap="fade-up" data-gsap-delay="300">
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input id="remember" type="checkbox"
+                            class="w-4 h-4 border border-gray-600 rounded bg-gray-700 focus:ring-3 focus:ring-cyan-600">
+                    </div>
+                    <label for="remember" class="ml-2 text-sm font-medium text-gray-300">Remember me</label>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit"
+                class="btn-animated w-full bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 text-white font-medium rounded-xl p-3 transition-all shadow-lg shadow-cyan-500/25"
+                data-gsap="fade-up" data-gsap-delay="400">
+                Sign In
+            </button>
+        </form>
+
+        <!-- Signup Links -->
+        <div class="mt-8 space-y-4">
+            <div class="relative">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-700"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-gray-800 text-gray-400">Or</span>
+                </div>
+            </div>
+
+            <a href="{% url 'student_signup' %}"
+                class="btn-animated w-full bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl p-3 transition-all border border-white/20 flex items-center justify-center gap-2">
+                <i class="ph ph-student"></i>
+                Student Signup
+            </a>
+
+            <a href="{% url 'teacher_signup' %}"
+                class="btn-animated w-full bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl p-3 transition-all border border-white/20 flex items-center justify-center gap-2">
+                <i class="ph ph-chalkboard-teacher"></i>
+                Teacher Signup
+            </a>
+        </div>
+
+        <!-- Back Link -->
+        <div class="mt-6 text-center">
+            <a href="{% url 'home' %}"
+                class="inline-flex items-center text-sm text-gray-400 hover:text-cyan-400 transition-colors">
+                <i class="ph ph-arrow-left mr-2"></i>
+                Back to Home
+            </a>
+        </div>
+
+        <!-- Demo Credentials (for testing) -->
+        <div class="mt-8 p-4 bg-gray-900/50 rounded-xl border border-gray-700 text-left text-sm space-y-3"
+            data-gsap="fade-up" data-gsap-delay="500">
+            <h3 class="text-cyan-400 font-semibold flex items-center gap-2">
+                <i class="ph ph-key"></i> Demo Credentials
+            </h3>
+
+            <div class="space-y-2">
+                <div class="flex justify-between items-center text-gray-400">
+                    <span class="text-xs uppercase tracking-wider font-semibold">Admin</span>
+                    <span class="text-gray-300 font-mono">admin / admin123</span>
+                </div>
+                <div class="h-px bg-gray-700/50"></div>
+                <div class="flex justify-between items-center text-gray-400">
+                    <span class="text-xs uppercase tracking-wider font-semibold">Student (A+)</span>
+                    <span class="text-gray-300 font-mono">alice / password123</span>
+                </div>
+                <div class="flex justify-between items-center text-gray-400">
+                    <span class="text-xs uppercase tracking-wider font-semibold">Student (Avg)</span>
+                    <span class="text-gray-300 font-mono">bob / password123</span>
+                </div>
+                <div class="flex justify-between items-center text-gray-400">
+                    <span class="text-xs uppercase tracking-wider font-semibold">Student (Late)</span>
+                    <span class="text-gray-300 font-mono">charlie / password123</span>
+                </div>
+            </div>
+            <p class="text-xs text-gray-500 italic mt-2 text-center">Click content to copy (if implemented) or type
+                manually.</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-8 pt-6 border-t border-gray-700 text-center">
+            <p class="text-xs text-gray-500">© 2024 StudentSys. All rights reserved.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
