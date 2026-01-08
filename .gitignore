@@ -6,33 +6,42 @@ __pycache__/
 *.pyo
 *.pyd
 *.sqlite3
+db.sqlite3
 *.log
 
 # =====================
-# Virtual Environment
+# Secrets & Environment
 # =====================
+.env
+.env.*
 env/
 venv/
 ENV/
 .venv/
+local_settings.py
+cookies.txt
 
 # =====================
 # Django Specific
 # =====================
 staticfiles/
 media/
-local_settings.py
 
 # =====================
 # OS Files
 # =====================
 .DS_Store
 Thumbs.db
+.AppleDouble
+.LSOverride
 
 # =====================
-# VS Code
+# Editors / IDEs
 # =====================
 .vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
 
 # =====================
 # Jupyter
@@ -47,9 +56,11 @@ htmlcov/
 .pytest_cache/
 
 # =====================
-# Node (if added later)
+# Frontend / Build
 # =====================
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+dist/
+build/

@@ -201,13 +201,23 @@ def populate():
                 fee.transaction_id = f"TXN{random.randint(100000, 999999)}"
                 fee.save()
 
+    # ==========================================
+    # 4. Create Admin User
+    # ==========================================
+    if not User.objects.filter(username="admin").exists():
+        User.objects.create_superuser("admin", "admin@school.com", "admin123")
+        print("   Created default admin (admin/admin123)")
+    else:
+        print("   Admin account already exists")
+
     print(f"   Created {len(students_to_create)} students with full data.")
     print("\n✅ DATA POPULATION COMPLETE")
     print("------------------------------------------------")
     print("Demo Accounts:")
-    print("1. Topper:   alice / password123")
-    print("2. Average:  bob / password123")
-    print("3. Late:     charlie / password123")
+    print("1. Admin:    admin / admin123")
+    print("2. Topper:   alice / password123")
+    print("3. Average:  bob / password123")
+    print("4. Late:     charlie / password123")
     print("------------------------------------------------")
 
 if __name__ == '__main__':
