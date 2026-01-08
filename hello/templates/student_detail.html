@@ -1,15 +1,167 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;">
-    <div class="glass col-md-4 text-center">
-        <h3 class="mb-3">Student Profile</h3>
-        <p><b>Name:</b> {{ student.name }}</p>
-        <p><b>Roll:</b> {{ student.roll_number }}</p>
-        <p><b>Branch:</b> {{ student.branch }}</p>
-        <p><b>Semester:</b> {{ student.semester }}</p>
+<div class="container">
+    <!-- Student Info Card -->
+    <div class="glass mb-4">
+        <div class="row">
+            <div class="col-md-8">
+                <h2>{{ student.name }}</h2>
+                <p class="mb-1">Roll No: <strong>{{ student.roll_number }}</strong></p>
+                <p class="mb-1">Email: {{ student.email }}</p>
+                <p class="mb-1">Phone: {{ student.phone }}</p>
+                <p class="mb-1">Branch: {{ student.branch }} | Semester: {{ student.semester }}</p>
+                <p class="mb-0">Address: {{ student.address|default:"N/A" }}</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                {% if student.is_active %}
+                <span class="badge bg-success fs-6">Active</span>
+                {% else %}
+                <span class="badge bg-danger fs-6">Inactive</span>
+                {% endif %}
+                <p class="mt-2 mb-0 text-muted">Admission: {{ student.admission_date|date:"M d, Y" }}</p>
+            </div>
+        </div>
+        <hr>
+        <div class="d-flex gap-2">
+            <a href="{% url 'edit_student' student.id %}" class="btn btn-warning">Edit</a>
+            <a href="{% url 'delete_student' student.id %}" class="btn btn-danger">Delete</a>
+            <a href="{% url 'student_list' %}" class="btn btn-outline-light">← Back</a>
+        </div>
+    </div>
 
-        <a href="{% url 'student_list' %}" class="btn btn-outline-light mt-2">Back</a>
+    <!-- Tabs for Attendance, Grades, Fees -->
+    <div class="glass">
+        <ul class="nav nav-tabs mb-4" id="studentTabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#attendance">Attendance</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#grades">Grades</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#fees">Fees</button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- Attendance Tab -->
+            <div class="tab-pane fade show active" id="attendance">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5>Recent Attendance</h5>
+                    <a href="{% url 'add_attendance' %}" class="btn btn-sm btn-success">+ Mark Attendance</a>
+                </div>
+                {% if attendance %}
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Subject</th>
+                            <th>Status</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for a in attendance %}
+                        <tr>
+                            <td>{{ a.date|date:"M d, Y" }}</td>
+                            <td>{{ a.subject }}</td>
+                            <td>
+                                {% if a.status == 'Present' %}
+                                <span class="badge bg-success">Present</span>
+                                {% elif a.status == 'Absent' %}
+                                <span class="badge bg-danger">Absent</span>
+                                {% else %}
+                                <span class="badge bg-warning text-dark">Late</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ a.remarks|default:"-" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-center text-muted py-3">No attendance records</p>
+                {% endif %}
+            </div>
+
+            <!-- Grades Tab -->
+            <div class="tab-pane fade" id="grades">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5>Academic Performance</h5>
+                    <a href="{% url 'add_grade' %}" class="btn btn-sm btn-info">+ Add Grade</a>
+                </div>
+                {% if grades %}
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Exam Type</th>
+                            <th>Marks</th>
+                            <th>Grade</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for g in grades %}
+                        <tr>
+                            <td>{{ g.subject }}</td>
+                            <td>{{ g.exam_type }}</td>
+                            <td>{{ g.obtained_marks }}/{{ g.max_marks }}</td>
+                            <td><span class="badge bg-primary">{{ g.grade }}</span></td>
+                            <td>{{ g.date|date:"M d, Y" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-center text-muted py-3">No grades recorded</p>
+                {% endif %}
+            </div>
+
+            <!-- Fees Tab -->
+            <div class="tab-pane fade" id="fees">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5>Fee History</h5>
+                    <a href="{% url 'add_fee' %}" class="btn btn-sm btn-warning">+ Create Fee</a>
+                </div>
+                {% if fees %}
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                            <th>Transaction</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for f in fees %}
+                        <tr>
+                            <td>{{ f.get_fee_type_display }}</td>
+                            <td>₹{{ f.amount }}</td>
+                            <td>{{ f.due_date|date:"M d, Y" }}</td>
+                            <td>
+                                {% if f.status == 'Paid' %}
+                                <span class="badge bg-success">Paid</span>
+                                {% elif f.status == 'Pending' %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                                {% else %}
+                                <span class="badge bg-danger">Overdue</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ f.transaction_id|default:"-" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-center text-muted py-3">No fee records</p>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
+

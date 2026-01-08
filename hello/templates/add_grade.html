@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="glass col-md-5">
+        <h3 class="text-center mb-4">Add Grade</h3>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Student</label>
+                <select class="form-select" name="student_id" required>
+                    <option value="">Select Student</option>
+                    {% for student in students %}
+                    <option value="{{ student.id }}">{{ student.name }} ({{ student.roll_number }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Subject</label>
+                <input class="form-control" name="subject" placeholder="e.g., Database Management System" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Exam Type</label>
+                <select class="form-select" name="exam_type" required>
+                    <option value="">Select Exam Type</option>
+                    <option value="Assignment">Assignment</option>
+                    <option value="Quiz">Quiz</option>
+                    <option value="Midterm">Midterm</option>
+                    <option value="Final">Final</option>
+                </select>
+            </div>
+            <div class="row mb-3">
+                <div class="col-6">
+                    <label class="form-label">Max Marks</label>
+                    <input class="form-control" type="number" name="max_marks" min="1" required>
+                </div>
+                <div class="col-6">
+                    <label class="form-label">Obtained Marks</label>
+                    <input class="form-control" type="number" name="obtained_marks" min="0" required>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Grade</label>
+                <select class="form-select" name="grade" required>
+                    <option value="">Select Grade</option>
+                    <option value="A+">A+ (90-100%)</option>
+                    <option value="A">A (85-89%)</option>
+                    <option value="A-">A- (80-84%)</option>
+                    <option value="B+">B+ (75-79%)</option>
+                    <option value="B">B (70-74%)</option>
+                    <option value="B-">B- (65-69%)</option>
+                    <option value="C+">C+ (60-64%)</option>
+                    <option value="C">C (55-59%)</option>
+                    <option value="C-">C- (50-54%)</option>
+                    <option value="D">D (40-49%)</option>
+                    <option value="F">F (Below 40%)</option>
+                </select>
+            </div>
+            <button class="btn btn-info w-100">Save Grade</button>
+        </form>
+        
+        <div class="text-center mt-3">
+            <a href="{% url 'grade_list' %}" class="text-light text-decoration-none">← Back to Grades</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

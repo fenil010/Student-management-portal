@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="glass col-md-5">
+        <h3 class="text-center mb-4">Edit Student</h3>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Full Name</label>
+                    <input class="form-control" name="name" value="{{ student.name }}" required>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Email</label>
+                    <input class="form-control" type="email" name="email" value="{{ student.email }}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Roll Number</label>
+                    <input class="form-control" name="roll_number" value="{{ student.roll_number }}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Phone</label>
+                    <input class="form-control" name="phone" value="{{ student.phone }}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Branch</label>
+                    <select class="form-select" name="branch" required>
+                        {% for branch in student.BRANCH_CHOICES %}
+                        <option value="{{ branch.0 }}" {% if student.branch == branch.0 %}selected{% endif %}>
+                            {{ branch.1 }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Semester</label>
+                    <select class="form-select" name="semester" required>
+                        {% for i, label in student.SEMESTER_CHOICES %}
+                        <option value="{{ i }}" {% if student.semester == i %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Address</label>
+                    <textarea class="form-control" name="address" rows="2">{{ student.address }}</textarea>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="is_active" id="isActive" {% if student.is_active %}checked{% endif %}>
+                        <label class="form-check-label" for="isActive">Active Student</label>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-success w-100 mt-2">Update Student</button>
+        </form>
+        
+        <div class="text-center mt-3">
+            <a href="{% url 'student_detail' student.id %}" class="text-light text-decoration-none">← Back to Profile</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

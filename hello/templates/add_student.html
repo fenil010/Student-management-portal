@@ -1,19 +1,61 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;">
-    <div class="glass col-md-4">
-        <h3 class="text-center mb-3">Add Student</h3>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="glass col-md-5">
+        <h3 class="text-center mb-4">Add New Student</h3>
 
         <form method="POST">
             {% csrf_token %}
-            <input class="form-control mb-2" name="name" placeholder="Name" required>
-            <input class="form-control mb-2" name="roll" placeholder="Roll Number" required>
-            <input class="form-control mb-2" name="branch" placeholder="Branch" required>
-            <input class="form-control mb-3" name="semester" placeholder="Semester" required>
-
-            <button class="btn btn-success w-100">Save Student</button>
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Full Name</label>
+                    <input class="form-control" name="name" placeholder="Enter full name" required>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Email</label>
+                    <input class="form-control" type="email" name="email" placeholder="student@example.com" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Roll Number</label>
+                    <input class="form-control" name="roll_number" placeholder="e.g., 2023CS001" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Phone</label>
+                    <input class="form-control" name="phone" placeholder="+91 9876543210" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Branch</label>
+                    <select class="form-select" name="branch" required>
+                        <option value="">Select Branch</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Mechanical">Mechanical</option>
+                        <option value="Civil">Civil</option>
+                        <option value="Electrical">Electrical</option>
+                        <option value="Information Technology">Information Technology</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Semester</label>
+                    <select class="form-select" name="semester" required>
+                        <option value="">Select Semester</option>
+                        {% for i in "12345678" %}
+                        <option value="{{ i }}">Semester {{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Address</label>
+                    <textarea class="form-control" name="address" rows="2" placeholder="Enter address"></textarea>
+                </div>
+            </div>
+            <button class="btn btn-success w-100 mt-2">Save Student</button>
         </form>
+        
+        <div class="text-center mt-3">
+            <a href="{% url 'student_list' %}" class="text-light text-decoration-none">← Back to Students</a>
+        </div>
     </div>
 </div>
 {% endblock %}

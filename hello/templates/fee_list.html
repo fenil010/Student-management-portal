@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Fee Management</h2>
+        <a href="{% url 'add_fee' %}" class="btn btn-warning">+ Create Fee</a>
+    </div>
+    
+    <div class="glass">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover text-center align-middle">
+                <thead>
+                    <tr>
+                        <th>Due Date</th>
+                        <th>Student</th>
+                        <th>Roll No</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for f in fees %}
+                    <tr>
+                        <td>{{ f.due_date|date:"M d, Y" }}</td>
+                        <td><a href="{% url 'student_detail' f.student.id %}" class="text-light">{{ f.student.name }}</a></td>
+                        <td>{{ f.student.roll_number }}</td>
+                        <td>{{ f.get_fee_type_display }}</td>
+                        <td>₹{{ f.amount }}</td>
+                        <td>
+                            {% if f.status == 'Paid' %}
+                            <span class="badge bg-success">Paid</span>
+                            {% elif f.status == 'Pending' %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                            {% else %}
+                            <span class="badge bg-danger">Overdue</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if f.status != 'Paid' %}
+                            <a href="{% url 'update_fee' f.id %}" class="btn btn-success btn-sm">Mark Paid</a>
+                            {% else %}
+                            <span class="text-muted">Completed</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4">No fee records</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

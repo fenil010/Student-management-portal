@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Notices</h2>
+        <a href="{% url 'add_notice' %}" class="btn btn-secondary">+ Post Notice</a>
+    </div>
+    
+    <div class="row">
+        {% for notice in notices %}
+        <div class="col-md-6 mb-4">
+            <div class="glass h-100">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5>{{ notice.title }}</h5>
+                    {% if notice.is_active %}
+                    <span class="badge bg-success">Active</span>
+                    {% else %}
+                    <span class="badge bg-secondary">Inactive</span>
+                    {% endif %}
+                </div>
+                <p class="mb-3">{{ notice.content|truncatewords:50 }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">{{ notice.created_at|date:"M d, Y h:i A" }}</small>
+                    <a href="{% url 'delete_notice' notice.id %}" class="btn btn-danger btn-sm">Delete</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="glass text-center py-5">
+                <p class="mb-0">No notices posted yet</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

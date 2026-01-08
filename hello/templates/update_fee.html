@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="glass col-md-5">
+        <h3 class="text-center mb-4">Update Fee Payment</h3>
+
+        <div class="glass mb-4">
+            <p><strong>Student:</strong> {{ fee.student.name }}</p>
+            <p><strong>Fee Type:</strong> {{ fee.get_fee_type_display }}</p>
+            <p><strong>Amount:</strong> ₹{{ fee.amount }}</p>
+            <p><strong>Due Date:</strong> {{ fee.due_date|date:"M d, Y" }}</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Status</label>
+                <select class="form-select" name="status" required>
+                    <option value="Pending" {% if fee.status == 'Pending' %}selected{% endif %}>Pending</option>
+                    <option value="Paid" {% if fee.status == 'Paid' %}selected{% endif %}>Paid</option>
+                    <option value="Overdue" {% if fee.status == 'Overdue' %}selected{% endif %}>Overdue</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Paid Date (if paid)</label>
+                <input class="form-control" type="date" name="paid_date" value="{{ fee.paid_date|date:'Y-m-d'|default:'' }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Transaction ID</label>
+                <input class="form-control" name="transaction_id" value="{{ fee.transaction_id }}" placeholder="e.g., TXN123456">
+            </div>
+            <button class="btn btn-success w-100">Update Payment</button>
+        </form>
+        
+        <div class="text-center mt-3">
+            <a href="{% url 'fee_list' %}" class="text-light text-decoration-none">← Back to Fees</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
