@@ -10,8 +10,7 @@ echo "📁 Collecting static files..."
 python manage.py collectstatic --no-input
 
 echo "🗄️ Running database migrations..."
-# Mark existing migrations as applied without running them
-python manage.py migrate --fake hello 0001_initial || true
-python manage.py migrate
+# Fake all migrations since tables already exist
+python manage.py migrate --fake
 
 echo "✅ Build complete!"
