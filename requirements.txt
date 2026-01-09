@@ -12,3 +12,4 @@ dj-database-url
 
 # Image Processing
 Pillow
+
