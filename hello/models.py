@@ -122,3 +122,19 @@ class Notice(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class EmailVerification(models.Model):
+    """Model to store email verification tokens for new signups"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='email_verification')
+    token = models.CharField(max_length=100, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_verified = models.BooleanField(default=False)
+
+    def is_expired(self):
+        """Token expires after 24 hours"""
+        from datetime import timedelta
+        return timezone.now() > self.created_at + timedelta(hours=24)
+
+    def __str__(self):
+        return f"Verification for {self.user.username}"

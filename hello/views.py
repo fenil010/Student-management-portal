@@ -3,7 +3,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Count, Sum
 from django.contrib.auth.models import User
-from .models import Student, Attendance, Grade, Fee, Notice
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib import messages
+import uuid
+from .models import Student, Attendance, Grade, Fee, Notice, EmailVerification
 
 def home(request):
     notices = Notice.objects.filter(is_active=True)[:5]
@@ -22,6 +26,14 @@ def login_view(request):
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
+            # Check if email is verified
+            try:
+                verification = EmailVerification.objects.get(user=user)
+                if not verification.is_verified:
+                    return render(request, 'login.html', {'error': 'Please verify your email before logging in. Check your inbox.'})
+            except EmailVerification.DoesNotExist:
+                pass  # Old users without verification can login
+            
             login(request, user)
             # Check if user is admin (staff) or student
             if user.is_staff:
@@ -267,6 +279,52 @@ def reports(request):
     })
 
 
+# ============= EMAIL VERIFICATION HELPER =============
+
+def send_verification_email(user, request):
+    """Send verification email to the user"""
+    token = str(uuid.uuid4())
+    
+    # Create or update verification record
+    EmailVerification.objects.update_or_create(
+        user=user,
+        defaults={'token': token, 'is_verified': False}
+    )
+    
+    # Build verification URL
+    verification_url = request.build_absolute_uri(f'/verify-email/{token}/')
+    
+    # Email content
+    subject = 'Verify Your StudentSys Account'
+    message = f'''
+Hello {user.first_name or user.username},
+
+Welcome to StudentSys! Please verify your email address by clicking the link below:
+
+{verification_url}
+
+This link will expire in 24 hours.
+
+If you didn't create an account, please ignore this email.
+
+Best regards,
+StudentSys Team
+'''
+    
+    try:
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [user.email],
+            fail_silently=False,
+        )
+        return True
+    except Exception as e:
+        print(f"Email sending failed: {e}")
+        return False
+
+
 # ============= STUDENT SIGNUP =============
 
 def student_signup(request):
@@ -291,7 +349,7 @@ def student_signup(request):
         if Student.objects.filter(roll_number=roll_number).exists():
             return render(request, "student_signup.html", {'error': 'Roll number already registered'})
         
-        # Create user
+        # Create user (inactive until email verified)
         user = User.objects.create_user(
             username=username,
             email=email,
@@ -312,13 +370,48 @@ def student_signup(request):
             address=address
         )
         
-        # Auto login
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('student_dashboard')
+        # Send verification email
+        if send_verification_email(user, request):
+            return render(request, "email_verification_sent.html", {'email': email})
+        else:
+            # If email sending fails, delete the user and show error
+            user.delete()
+            return render(request, "student_signup.html", {'error': 'Failed to send verification email. Please try again.'})
     
     return render(request, "student_signup.html")
+
+
+def verify_email(request, token):
+    """Verify email using the token"""
+    try:
+        verification = EmailVerification.objects.get(token=token)
+        
+        if verification.is_expired():
+            return render(request, "email_verification_result.html", {
+                'success': False,
+                'message': 'This verification link has expired. Please signup again.'
+            })
+        
+        if verification.is_verified:
+            return render(request, "email_verification_result.html", {
+                'success': True,
+                'message': 'Your email has already been verified. You can login now.'
+            })
+        
+        # Mark as verified
+        verification.is_verified = True
+        verification.save()
+        
+        return render(request, "email_verification_result.html", {
+            'success': True,
+            'message': 'Your email has been verified successfully! You can now login.'
+        })
+        
+    except EmailVerification.DoesNotExist:
+        return render(request, "email_verification_result.html", {
+            'success': False,
+            'message': 'Invalid verification link.'
+        })
 
 
 # ============= TEACHER SIGNUP =============

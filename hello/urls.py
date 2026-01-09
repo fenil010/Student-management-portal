@@ -7,13 +7,17 @@ from .views import (
     fee_list, add_fee, update_fee,
     notice_list, add_notice, delete_notice,
     reports,
-    student_signup, teacher_signup, student_dashboard
+    student_signup, teacher_signup, student_dashboard,
+    verify_email
 )
 
 urlpatterns = [
     path('', home, name='home'),
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
+    
+    # Email Verification
+    path('verify-email/<str:token>/', verify_email, name='verify_email'),
     
     # Signup Pages
     path('student/signup/', student_signup, name='student_signup'),
