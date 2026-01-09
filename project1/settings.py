@@ -22,7 +22,9 @@ SECRET_KEY = os.environ.get(
     "django-insecure-dev-key-change-this"
 )
 
-DEBUG = True
+# Set DEBUG=True only for local development
+# On Render, this should be False (either unset or explicitly set)
+DEBUG = os.environ.get("DEBUG", "False").lower() in ("true", "1", "yes")
 
 
 ALLOWED_HOSTS = ["*"]
