@@ -420,9 +420,8 @@
                 <div class="z-50 hidden my-4 text-base list-none bg-gray-800 divide-y divide-gray-700 rounded-lg shadow-lg"
                     id="user-dropdown">
                     <div class="px-4 py-3">
-                        <span class="block text-sm text-white">{{ user.username }}</span>
-                        <span class="block text-sm text-gray-400 truncate">{{ user.email|default:"admin@studentsys.edu"
-                            }}</span>
+                        <span class="block text-sm text-white font-medium">{{ user.username }}</span>
+                        <span class="block text-xs text-cyan-400">{% if user.is_superuser %}Administrator{% else %}User{% endif %}</span>
                     </div>
                     <ul class="py-2" aria-labelledby="user-menu-button">
                         <li>
@@ -535,17 +534,21 @@
     <!-- Footer -->
     <footer class="bg-slate-900/90 backdrop-blur-sm border-t border-gray-700 relative z-10">
         <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
-            <span class="text-sm text-gray-400 sm:text-center">© 2024 <a href="{% url 'home' %}"
+            <span class="text-sm text-gray-400 sm:text-center">© 2026 <a href="{% url 'home' %}"
                     class="hover:text-cyan-400 transition-colors">StudentSys™</a>. All Rights Reserved.</span>
-            <div class="flex mt-4 sm:justify-center md:mt-0 space-x-4">
-                <a href="#" class="text-gray-400 hover:text-cyan-400 transition-colors"><i
-                        class="ph ph-facebook-logo text-xl"></i></a>
-                <a href="#" class="text-gray-400 hover:text-cyan-400 transition-colors"><i
-                        class="ph ph-instagram-logo text-xl"></i></a>
-                <a href="#" class="text-gray-400 hover:text-cyan-400 transition-colors"><i
-                        class="ph ph-twitter-logo text-xl"></i></a>
-                <a href="#" class="text-gray-400 hover:text-cyan-400 transition-colors"><i
-                        class="ph ph-github-logo text-xl"></i></a>
+            <div class="flex mt-4 sm:justify-center md:mt-0 space-x-5">
+                <a href="https://github.com/fenil010" target="_blank" rel="noopener noreferrer"
+                    class="text-gray-400 hover:text-cyan-400 transition-all hover:scale-110" title="GitHub">
+                    <i class="ph ph-github-logo text-xl"></i>
+                </a>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"
+                    class="text-gray-400 hover:text-pink-400 transition-all hover:scale-110" title="Instagram">
+                    <i class="ph ph-instagram-logo text-xl"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/fenil-sakhiya/" target="_blank" rel="noopener noreferrer"
+                    class="text-gray-400 hover:text-blue-400 transition-all hover:scale-110" title="LinkedIn">
+                    <i class="ph ph-linkedin-logo text-xl"></i>
+                </a>
             </div>
         </div>
     </footer>

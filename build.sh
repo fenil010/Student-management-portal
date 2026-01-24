@@ -5,13 +5,14 @@ set -o errexit
 echo "📦 Installing dependencies..."
 pip install --upgrade pip
 pip install -r requirements.txt
-python manage.py migrate --noinput
-python manage.py collectstatic --noinput
 
 echo "📁 Collecting static files..."
 python manage.py collectstatic --no-input
 
 echo "🗄️ Running database migrations..."
-python manage.py migrate --fake-initial
+python manage.py migrate --noinput
+
+echo "👥 Populating demo data..."
+python populate_demo_data.py
 
 echo "✅ Build complete!"
